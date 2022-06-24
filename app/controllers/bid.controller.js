@@ -27,7 +27,7 @@ const newBid = (req, res) => {
   if (!req.user) res.status(401).json({ message: 'Not authenticated' });
   if (req.book) console.log('known');
   else {
-    if(req.body.isbn)
+    if (req.body.isbn) console.log('go look');
   }
 };
 
