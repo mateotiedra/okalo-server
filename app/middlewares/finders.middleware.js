@@ -9,10 +9,11 @@ const {
 
 const db = require('../models/db.model');
 const User = db.user;
+const Book = db.book;
 
 const findObjectByAttribute =
   (DefinedObject, definedObjectName) =>
-  (attribute, reqAttribute) =>
+  (attribute, reqAttribute, required = true) =>
   (req, res, next) => {
     if (!reqAttribute) reqAttribute = attribute;
     const attributeInQueryParams = req.method === 'GET';
@@ -33,7 +34,8 @@ const findObjectByAttribute =
       },
     })
       .then((definedObject) => {
-        if (!definedObject) return objectNotFoundRes(res, definedObjectName);
+        if (!definedObject && required)
+          return objectNotFoundRes(res, definedObjectName);
         req[definedObjectName] = definedObject;
         next();
       })
@@ -42,6 +44,7 @@ const findObjectByAttribute =
 
 const objectFinders = {
   findUserByAttribute: findObjectByAttribute(User, 'user'),
+  findBookByISBN: findObjectByAttribute(Book, 'book')('isbn', 'isbn', false),
 };
 
 module.exports = {

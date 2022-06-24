@@ -73,6 +73,7 @@ app.use(function (req, res, next) {
 // routes
 require('./app/routes/auth.routes')(app);
 require('./app/routes/user.routes')(app);
+require('./app/routes/bid.routes')(app);
 
 // set port, listen for requests
 const PORT = config.PORT;

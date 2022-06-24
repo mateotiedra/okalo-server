@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   };
 
-  const Bid = sequelize.define('bid', attributes);
+  const Bid = sequelize.define('bid', attributes, { paranoid: true });
 
   Bid.associate = (models) => {
     Bid.belongsTo(models.book);

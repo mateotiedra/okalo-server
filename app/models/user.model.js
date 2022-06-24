@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('user', attributes);
 
   User.associate = (models) => {
-    User.hasMany(models.bid);
+    User.hasMany(models.bid, { onDelete: 'CASCADE' });
   };
 
   return User;
