@@ -43,5 +43,9 @@ module.exports = (sequelize, DataTypes) => {
 
   const User = sequelize.define('user', attributes);
 
+  User.associate = (models) => {
+    User.hasMany(models.bid);
+  };
+
   return User;
 };
