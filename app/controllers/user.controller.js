@@ -3,7 +3,6 @@ const {
   unexpectedErrorCatch,
   uniqueAttributeErrorCatch,
 } = require('../helpers/errorCatch.helper');
-const { updateObject } = require('../helpers/object.helper');
 
 const User = db.user;
 const Op = db.Sequelize.Op;

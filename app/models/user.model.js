@@ -28,6 +28,17 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ENUM('admin', 'mod', 'user'),
       defaultValue: 'user',
     },
+    // Other attributes
+    username: {
+      type: DataTypes.STRING,
+      unique: true,
+    },
+    phone: {
+      type: DataTypes.STRING,
+    },
+    instagram: {
+      type: DataTypes.STRING,
+    },
   };
 
   const User = sequelize.define('user', attributes);
