@@ -8,4 +8,9 @@ module.exports = {
   USER: process.env.MAIL_USER,
   PORT: process.env.MAIL_PORT,
   PASSWORD: process.env.MAIL_PASSWORD,
+  ACTIVATED:
+    process.env.MAIL_HOST &&
+    process.env.MAIL_USER &&
+    process.env.MAIL_PASSWORD &&
+    true,
 };

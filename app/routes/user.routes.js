@@ -29,6 +29,9 @@ module.exports = function (app) {
     controller.updateUserRole
   );
 
+  // Change user's attributes
+  app.put('/user/update', [verifyAccessToken], controller.updateUserParameters);
+
   // Delete a user account
   app.delete(
     '/user',

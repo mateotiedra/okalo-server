@@ -3,6 +3,7 @@ const {
   unexpectedErrorCatch,
   uniqueAttributeErrorCatch,
 } = require('../helpers/errorCatch.helper');
+const { updateObject } = require('../helpers/object.helper');
 
 const User = db.user;
 const Op = db.Sequelize.Op;
@@ -51,6 +52,20 @@ const updateUserRole = (req, res) => {
     .catch(unexpectedErrorCatch(res));
 };
 
+const updateUserParameters = (req, res) => {
+  const parametersAttr = ['email'];
+  parametersAttr.forEach((key) => {
+    if (req.body[key] !== undefined) req.user[key] = req.body[key];
+  });
+
+  req.user
+    .save()
+    .then(() => {
+      res.status(200).json(filterUserAttributes(req.user));
+    })
+    .catch(unexpectedErrorCatch(res));
+};
+
 const deleteUser = (req, res) => {
   req.user
     .destroy()
@@ -64,5 +79,6 @@ module.exports = {
   getUserBoard,
   getEveryUserBoard,
   updateUserRole,
+  updateUserParameters,
   deleteUser,
 };
