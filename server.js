@@ -48,10 +48,8 @@ app.use(express.json());
 // Database
 const db = require('./app/models/db.model');
 
-// True to set the database for the first time or reset it
-const resetDB = false;
-db.sequelize.sync({ force: resetDB }).then(() => {
-  if (resetDB) {
+db.sequelize.sync({ force: config.RESET_DB }).then(() => {
+  if (config.RESET_DB) {
     console.log('Drop and Resync Database with { force: true }');
     initial();
   }

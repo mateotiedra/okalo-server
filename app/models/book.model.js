@@ -1,9 +1,13 @@
 module.exports = (sequelize, DataTypes) => {
   const attributes = {
+    uuid: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV1,
+      primaryKey: true,
+    },
     isbn: {
       type: DataTypes.STRING,
-      primaryKey: true,
-      allowNull: false,
+      unique: true,
     },
     title: {
       type: DataTypes.STRING,

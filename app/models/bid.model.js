@@ -10,9 +10,9 @@ module.exports = (sequelize, DataTypes) => {
       values: ['new', 'good', 'damaged'],
       defaultValue: 'good',
     },
-    annotation: {
+    customisation: {
       type: DataTypes.ENUM,
-      values: ['not', 'little', 'good'],
+      values: ['none', 'little', 'good'],
       defaultValue: 'little',
     },
     price: {
