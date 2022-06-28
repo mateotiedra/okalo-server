@@ -16,8 +16,14 @@ module.exports = (sequelize, DataTypes) => {
     author: {
       type: DataTypes.STRING,
     },
-    edition: {
-      type: DataTypes.BIGINT,
+    publisher: {
+      type: DataTypes.STRING,
+    },
+    language: {
+      type: DataTypes.STRING,
+    },
+    coverLink: {
+      type: DataTypes.STRING,
     },
   };
 

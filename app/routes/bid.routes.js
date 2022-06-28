@@ -8,7 +8,14 @@ const { findBookByISBN } = require('../middlewares/finders.middleware');
 
 module.exports = function (app) {
   // Create a new bid
-  app.post('/bid', [verifyAccessToken, findBookByISBN], controller.newBid);
+  app.post(
+    '/bid',
+    [
+      verifyAccessToken,
+      verifyRequestBody(['condition', 'customisation', 'price']),
+    ],
+    controller.newBid
+  );
 
   // Get the bid's basics infos
   app.get('/bid', [verifyAccessToken], controller.getBidBoard);

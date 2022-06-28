@@ -1,11 +1,9 @@
 const db = require('../models/db.model');
-const {
-  unexpectedErrorCatch,
-  uniqueAttributeErrorCatch,
-} = require('../helpers/errorCatch.helper');
+const { unexpectedErrorCatch } = require('../helpers/errorCatch.helper');
+
+const bookController = require('../controllers/book.controller');
 
 const Bid = db.bid;
-const Op = db.Sequelize.Op;
 
 const blackListAttributes = ['userUuid'];
 
@@ -24,11 +22,22 @@ const filterBidAttributes = (bid) => {
 };
 
 const newBid = (req, res) => {
-  if (!req.user) res.status(401).json({ message: 'Not authenticated' });
-  if (req.book) console.log('known');
-  else {
-    if (req.body.isbn) console.log('go look');
-  }
+  if (req.body.isbn)
+    bookController
+      .fetchBookData(req.body.isbn)
+      .then((bookUuid) => {
+        Bid.create({
+          condition: req.body.condition,
+          customisation: req.body.customisation,
+          price: req.body.price,
+          bookUuid: bookUuid,
+        }).then((bookData) => {
+          res.status(200).json(bookData);
+        });
+      })
+      .catch(() => {
+        res.status(404).json({ message: 'Book not found with the ISBN' });
+      });
 };
 
 const getBidBoard = (req, res) => {
