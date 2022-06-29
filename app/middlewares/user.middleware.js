@@ -80,9 +80,22 @@ const validEmailToken = (req, res, next) => {
     .catch(unexpectedErrorCatch(res));
 };
 
+// Verify that the user owns the bid
+const verifyOwnership = (req, res, next) => {
+  req.bid
+    .getUser()
+    .then(({ uuid: bidOwnerUuid }) => {
+      console.log(req.user.uuid, bidOwnerUuid);
+      if (req.user.uuid == bidOwnerUuid) next();
+      else res.status(403).json({ message: 'Not owner of this bid' });
+    })
+    .catch(unexpectedErrorCatch(res));
+};
+
 module.exports = {
   verifyAccessToken,
   verifyStatus,
   verifyRole,
   validEmailToken,
+  verifyOwnership,
 };

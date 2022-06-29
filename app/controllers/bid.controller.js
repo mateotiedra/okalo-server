@@ -5,17 +5,17 @@ const bookController = require('../controllers/book.controller');
 
 const Bid = db.bid;
 
-const blackListAttributes = ['userUuid'];
+const blackListAttributes = ['userUuid', 'deletedAt'];
 
 const filterBidAttributes = (bid) => {
-  const attributesToSend = Object.keys(User.rawAttributes).filter(
+  const attributesToSend = Object.keys(Bid.rawAttributes).filter(
     (attribute) => !blackListAttributes.includes(attribute)
   );
 
   let bidSafeData = {};
 
   attributesToSend.forEach((attribute) => {
-    bidSafeData[attribute] = user.dataValues[attribute];
+    bidSafeData[attribute] = bid.dataValues[attribute];
   });
 
   return bidSafeData;
@@ -30,7 +30,7 @@ const newBid = async (req, res) => {
     });
   } else {
     // Create a new book without isbn
-    if (!req.body.title)
+    if (!req.body.title || !req.body.language)
       return res.status(400).json({
         message: 'Bad request. Missing title',
       });
@@ -67,7 +67,7 @@ const getBidBoard = (req, res) => {
 };
 
 const updateBidParameters = (req, res) => {
-  const parametersAttr = ['condition', 'annotation', 'price'];
+  const parametersAttr = ['condition', 'customisation', 'price'];
   parametersAttr.forEach((key) => {
     if (req.body[key] !== undefined) req.bid[key] = req.body[key];
   });
@@ -75,7 +75,7 @@ const updateBidParameters = (req, res) => {
   req.bid
     .save()
     .then(() => {
-      res.status(200).json(filterBidAttributes(req.user));
+      res.status(200).json(filterBidAttributes(req.bid));
     })
     .catch(unexpectedErrorCatch(res));
 };

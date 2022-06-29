@@ -10,6 +10,7 @@ const {
 const db = require('../models/db.model');
 const User = db.user;
 const Book = db.book;
+const Bid = db.bid;
 
 const findObjectByAttribute =
   (DefinedObject, definedObjectName) =>
@@ -45,6 +46,7 @@ const findObjectByAttribute =
 const objectFinders = {
   findUserByAttribute: findObjectByAttribute(User, 'user'),
   findBookByISBN: findObjectByAttribute(Book, 'book')('isbn', 'isbn', false),
+  findBidByAttribute: findObjectByAttribute(Bid, 'bid'),
 };
 
 module.exports = {

@@ -1,10 +1,10 @@
 const {
   verifyAccessToken,
-  verifyRole,
+  verifyOwnership,
 } = require('../middlewares/user.middleware');
 const { verifyRequestBody } = require('../middlewares/request.middleware');
 const controller = require('../controllers/bid.controller');
-const { findBookByISBN } = require('../middlewares/finders.middleware');
+const { findBidByAttribute } = require('../middlewares/finders.middleware');
 
 module.exports = function (app) {
   // Create a new bid
@@ -18,11 +18,16 @@ module.exports = function (app) {
   );
 
   // Get the bid's basics infos
-  app.get('/bid', [verifyAccessToken], controller.getBidBoard);
+  app.get('/bid', [findBidByAttribute('uuid')], controller.getBidBoard);
 
-  /* // Change bid's attributes
-  app.put('/bid', [verifyAccessToken], controller.updateUserParameters);
+  // Change bid's attributes
+  app.put(
+    '/bid',
+    [verifyAccessToken, findBidByAttribute('uuid'), verifyOwnership],
+    controller.updateBidParameters
+  );
 
+  /*
   // Delete a bid
   app.delete(
     '/bid',
