@@ -101,7 +101,6 @@ const getSuggestedList = (req, res) => {
         },
       ],
     },
-    //include: 'bids',
   })
     .then((books) => {
       res.status(200).json(
@@ -113,8 +112,39 @@ const getSuggestedList = (req, res) => {
     .catch(unexpectedErrorCatch(res));
 };
 
+const searchBooks = (req, res) => {
+  let andList = [];
+  for (const attr of ['title', 'author', 'publisher', 'language']) {
+    if (!req.query[attr]) continue;
+
+    const match = req.query[attr].toLowerCase();
+
+    andList.push({
+      [attr]: sequelize.where(
+        sequelize.fn('LOWER', sequelize.col(attr)),
+        'LIKE',
+        '%' + match + '%'
+      ),
+    });
+  }
+  Book.findAll({
+    where: {
+      [Op.and]: andList,
+    },
+    include: 'bids',
+  }).then((books) => {
+    const safeBooks = books.map((book) => {
+      book.dataValues.nbrBids = book.bids.length;
+      book.dataValues.bids = undefined;
+      return book;
+    });
+    res.status(200).json(safeBooks);
+  });
+};
+
 module.exports = {
   fetchBookData,
   newBook,
   getSuggestedList,
+  searchBooks,
 };
