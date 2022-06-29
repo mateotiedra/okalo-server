@@ -25,9 +25,13 @@ const newBid = async (req, res) => {
   let bookUuid;
   if (req.body.isbn) {
     // Go fetch the book data
-    bookUuid = await bookController.fetchBookData(req.body.isbn).catch(() => {
-      res.status(404).json({ message: 'Book not found with the ISBN' });
-    });
+    bookUuid = await bookController
+      .fetchBookData(req.body.isbn)
+      .catch((err) => {
+        err.message == 404
+          ? res.status(404).json({ message: 'Book not found with the ISBN' })
+          : unexpectedErrorCatch(res)(err);
+      });
   } else {
     // Create a new book without isbn
     if (!req.body.title || !req.body.language)
