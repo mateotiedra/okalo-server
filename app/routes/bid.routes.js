@@ -27,16 +27,10 @@ module.exports = function (app) {
     controller.updateBidParameters
   );
 
-  /*
   // Delete a bid
   app.delete(
     '/bid',
-    [
-      verifyRequestBody(['userEmail']),
-      verifyAccessToken,
-      verifyRole(['admin']),
-      findUserByAttribute('email', 'userEmail'),
-    ],
+    [verifyAccessToken, findBidByAttribute('uuid'), verifyOwnership],
     controller.deleteBid
-  ); */
+  );
 };

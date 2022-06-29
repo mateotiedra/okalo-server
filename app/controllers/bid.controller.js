@@ -32,7 +32,7 @@ const newBid = async (req, res) => {
     // Create a new book without isbn
     if (!req.body.title || !req.body.language)
       return res.status(400).json({
-        message: 'Bad request. Missing title',
+        message: 'Bad request. Missing title or language',
       });
 
     bookUuid = await bookController
@@ -80,11 +80,19 @@ const updateBidParameters = (req, res) => {
     .catch(unexpectedErrorCatch(res));
 };
 
-const deleteBid = (req, res) => {
+const deleteBid = async (req, res) => {
+  // Change the status of the bid
+  req.bid.status = req.body.sold ? 'sold' : 'deleted';
+  try {
+    await req.bid.save();
+  } catch (err) {
+    unexpectedErrorCatch(res)(err);
+  }
+
   req.bid
     .destroy()
     .then(() => {
-      res.status(204).json({ message: 'The bid has been deleted' });
+      res.status(204).send();
     })
     .catch(unexpectedErrorCatch(res));
 };
