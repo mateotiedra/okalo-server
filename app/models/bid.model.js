@@ -18,6 +18,9 @@ module.exports = (sequelize, DataTypes) => {
     price: {
       type: DataTypes.SMALLINT,
     },
+    comment: {
+      type: DataTypes.TEXT('medium'),
+    },
     status: {
       type: DataTypes.ENUM,
       values: ['pending', 'deleted', 'sold'],

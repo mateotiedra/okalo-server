@@ -71,7 +71,7 @@ const getBidBoard = (req, res) => {
 };
 
 const updateBidParameters = (req, res) => {
-  const parametersAttr = ['condition', 'customisation', 'price'];
+  const parametersAttr = ['condition', 'customisation', 'price', 'comment'];
   parametersAttr.forEach((key) => {
     if (req.body[key] !== undefined) req.bid[key] = req.body[key];
   });
