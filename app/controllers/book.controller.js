@@ -73,7 +73,48 @@ const newBook = (bookData) =>
       })
       .catch(reject);
   });
+
+const getSuggestedList = (req, res) => {
+  if (!(req.query.match && req.query.attr))
+    return res
+      .status(400)
+      .json({ message: 'Bad request. Missing params (match, attr, [attr])' });
+
+  const match = req.query.match.toLowerCase();
+  const attr = req.query.attr;
+
+  Book.findAll({
+    limit: 5,
+    where: {
+      [Op.and]: [
+        {
+          [attr]: sequelize.where(
+            sequelize.fn('LOWER', sequelize.col(attr)),
+            'LIKE',
+            match + '%'
+          ),
+        },
+        {
+          isbn: {
+            [Op.ne]: null,
+          },
+        },
+      ],
+    },
+    //include: 'bids',
+  })
+    .then((books) => {
+      res.status(200).json(
+        books.map((book) => {
+          return book[attr];
+        })
+      );
+    })
+    .catch(unexpectedErrorCatch(res));
+};
+
 module.exports = {
   fetchBookData,
   newBook,
+  getSuggestedList,
 };

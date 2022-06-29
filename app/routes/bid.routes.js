@@ -3,8 +3,10 @@ const {
   verifyOwnership,
 } = require('../middlewares/user.middleware');
 const { verifyRequestBody } = require('../middlewares/request.middleware');
-const controller = require('../controllers/bid.controller');
 const { findBidByAttribute } = require('../middlewares/finders.middleware');
+
+const controller = require('../controllers/bid.controller');
+const bookController = require('../controllers/book.controller');
 
 module.exports = function (app) {
   // Create a new bid
@@ -33,4 +35,7 @@ module.exports = function (app) {
     [verifyAccessToken, findBidByAttribute('uuid'), verifyOwnership],
     controller.deleteBid
   );
+
+  // Get a list of suggestion from book's attr
+  app.get('/book/suggestions', bookController.getSuggestedList);
 };
