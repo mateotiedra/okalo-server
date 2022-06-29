@@ -1,6 +1,7 @@
 const {
   validEmailToken,
   verifyStatus,
+  verifyAccessToken,
 } = require('../middlewares/user.middleware');
 const { verifyRequestBody } = require('../middlewares/request.middleware');
 const controller = require('../controllers/auth.controller');
@@ -56,6 +57,12 @@ module.exports = function (app) {
       verifyStatus(['active']),
     ],
     controller.recover
+  );
+
+  app.put(
+    '/auth/change-password',
+    [verifyAccessToken, verifyRequestBody(['newPassword'])],
+    controller.changePassword
   );
 
   // Sign in the user

@@ -14,9 +14,11 @@ const mailController = require('../controllers/mail.controller');
 const User = db.user;
 const Op = db.Sequelize.Op;
 
+const saltRounds = 10;
+
 const signUp = (req, res) => {
   // Hash the password
-  bcrypt.hash(req.body.password, 10, (err, hash) => {
+  bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
     const password = hash;
 
     // Generate the confirmation token
@@ -76,28 +78,31 @@ const signIn = (req, res) => {
 
 const sendEmailToken =
   (emailType = 'confirmation') =>
-  (req, res) => {
+  async (req, res) => {
     const user = req.user;
-    if (Date.now() - user.emailTokenGeneratedAt < 3 * 60 * 1000)
+    if (Date.now() - user.emailTokenGeneratedAt < 0 * 60 * 1000)
       return res.status(409).json({
         message: 'Wait before sending a new email',
       });
-    crypto.randomBytes(16, (err, buf) => {
-      user.emailToken = buf.toString('hex');
-      user.emailTokenGeneratedAt = Date.now();
-      return user.save().then(() => {
-        const options = {
-          email: user.email,
-          emailToken: user.emailToken,
-        };
 
-        (emailType === 'confirmation'
-          ? mailController.sendAccountConfirmation(options)
-          : mailController.sendResetPassword(options)
-        ).then(() => {
-          return res.status(202).json({ message: emailType + ' email sent!' });
-        });
-      });
+    user.emailToken = crypto.randomBytes(16).toString('hex');
+    user.emailTokenGeneratedAt = Date.now();
+    try {
+      await user.save();
+    } catch (err) {
+      return unexpectedErrorCatch(res)(err);
+    }
+
+    const options = {
+      email: user.email,
+      emailToken: user.emailToken,
+    };
+
+    (emailType === 'confirmation'
+      ? mailController.sendAccountConfirmation(options)
+      : mailController.sendResetPassword(options)
+    ).then(() => {
+      return res.status(202).json({ message: emailType + ' email sent!' });
     });
   };
 
@@ -123,6 +128,23 @@ const recover = (req, res) => {
   });
 };
 
+const changePassword = async (req, res) => {
+  let hash;
+  try {
+    hash = await bcrypt.hash(req.body.newPassword, saltRounds);
+  } catch (err) {
+    return unexpectedErrorCatch(res)(err);
+  }
+
+  req.user.password = hash;
+  req.user
+    .save()
+    .then(() => {
+      res.status(200).json({ message: 'Password well updated' });
+    })
+    .catch(unexpectedErrorCatch(res));
+};
+
 module.exports = {
   signUp,
   resendConfirmation: sendEmailToken('confirmation'),
@@ -130,4 +152,5 @@ module.exports = {
   resetPassword: sendEmailToken('reset'),
   confirmEmail,
   recover,
+  changePassword,
 };
