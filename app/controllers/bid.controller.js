@@ -21,23 +21,45 @@ const filterBidAttributes = (bid) => {
   return bidSafeData;
 };
 
-const newBid = (req, res) => {
-  if (req.body.isbn)
-    bookController
-      .fetchBookData(req.body.isbn)
-      .then((bookUuid) => {
-        Bid.create({
-          condition: req.body.condition,
-          customisation: req.body.customisation,
-          price: req.body.price,
-          bookUuid: bookUuid,
-        }).then((bookData) => {
-          res.status(200).json(bookData);
-        });
-      })
-      .catch(() => {
-        res.status(404).json({ message: 'Book not found with the ISBN' });
+const newBid = async (req, res) => {
+  let bookUuid;
+  if (req.body.isbn) {
+    // Go fetch the book data
+    bookUuid = await bookController.fetchBookData(req.body.isbn).catch(() => {
+      res.status(404).json({ message: 'Book not found with the ISBN' });
+    });
+  } else {
+    // Create a new book without isbn
+    if (!req.body.title)
+      return res.status(400).json({
+        message: 'Bad request. Missing title',
       });
+
+    bookUuid = await bookController
+      .newBook({
+        title: req.body.title,
+        author: req.body.author,
+        publisher: req.body.publisher,
+        language: req.body.language,
+      })
+      .catch(unexpectedErrorCatch(res));
+  }
+
+  // Quit if the isbn found nothing and the new book from given params (title, ...) failed
+  if (!bookUuid) return;
+
+  // Create the bid
+  Bid.create({
+    condition: req.body.condition,
+    customisation: req.body.customisation,
+    price: req.body.price,
+    userUuid: req.user.uuid,
+    bookUuid: bookUuid,
+  })
+    .then((bid) => {
+      res.status(200).json(bid);
+    })
+    .catch(unexpectedErrorCatch(res));
 };
 
 const getBidBoard = (req, res) => {

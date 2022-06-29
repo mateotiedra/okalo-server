@@ -30,7 +30,6 @@ const fetchBookData = (isbn) =>
               return reject();
 
             data = data.items[0].volumeInfo;
-            console.log(data);
             Book.create({
               isbn: isbn,
               title: data.title,
@@ -51,6 +50,15 @@ const fetchBookData = (isbn) =>
     });
   });
 
+const newBook = (bookData) =>
+  new Promise((resolve, reject) => {
+    Book.create(bookData)
+      .then((book) => {
+        resolve(book.uuid);
+      })
+      .catch(reject);
+  });
 module.exports = {
   fetchBookData,
+  newBook,
 };
