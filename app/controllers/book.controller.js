@@ -117,16 +117,18 @@ const searchBooks = (req, res) => {
   for (const attr of ['title', 'author', 'publisher', 'language']) {
     if (!req.query[attr]) continue;
 
-    const match = req.query[attr].toLowerCase();
-
-    andList.push({
-      [attr]: sequelize.where(
-        sequelize.fn('LOWER', sequelize.col(attr)),
-        'LIKE',
-        '%' + match + '%'
-      ),
-    });
+    const attrQuery = req.query[attr].toLowerCase();
+    for (const match of attrQuery.split(' ')) {
+      andList.push({
+        [attr]: sequelize.where(
+          sequelize.fn('LOWER', sequelize.col(attr)),
+          'LIKE',
+          '%' + match + '%'
+        ),
+      });
+    }
   }
+
   Book.findAll({
     where: {
       [Op.and]: andList,
