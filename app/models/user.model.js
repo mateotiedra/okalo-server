@@ -45,7 +45,15 @@ module.exports = (sequelize, DataTypes) => {
 
   User.associate = (models) => {
     User.hasMany(models.bid, { onDelete: 'CASCADE' });
+    User.belongsToMany(models.institution, { through: 'User_Institutions' });
   };
+
+  User.blackListAttributes = [
+    'uuid',
+    'emailToken',
+    'emailTokenGeneratedAt',
+    'password',
+  ];
 
   return User;
 };

@@ -7,16 +7,9 @@ const {
 const User = db.user;
 const Op = db.Sequelize.Op;
 
-const blackListAttributes = [
-  'uuid',
-  'emailToken',
-  'emailTokenGeneratedAt',
-  'password',
-];
-
 const filterUserAttributes = (user) => {
   const attributesToSend = Object.keys(User.rawAttributes).filter(
-    (attribute) => !blackListAttributes.includes(attribute)
+    (attribute) => !User.blackListAttributes.includes(attribute)
   );
 
   let userSafeData = {};
@@ -34,7 +27,7 @@ const getUserBoard = (req, res) => {
 };
 
 const getEveryUserBoard = (req, res) => {
-  User.findAll({ attributes: { exclude: blackListAttributes } })
+  User.findAll({ attributes: { exclude: User.blackListAttributes } })
     .then((users) => {
       res.status(200).json(users);
     })

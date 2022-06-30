@@ -25,7 +25,9 @@ db.Op = Sequelize.Op;
 db.user = require('./user.model.js')(sequelize, Sequelize);
 db.bid = require('./bid.model.js')(sequelize, Sequelize);
 db.book = require('./book.model.js')(sequelize, Sequelize);
+db.institution = require('./institution.model.js')(sequelize, Sequelize);
 
+db.institution.associate(db);
 db.user.associate(db);
 db.bid.associate(db);
 db.book.associate(db);
