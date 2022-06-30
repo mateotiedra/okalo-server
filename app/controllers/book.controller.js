@@ -7,6 +7,8 @@ const db = require('../models/db.model');
 const Op = db.Sequelize.Op;
 const sequelize = db.sequelize;
 const Book = db.book;
+const Bid = db.bid;
+const User = db.user;
 
 const fetchBookData = async (isbn) => {
   // Fetch to the saved books first
@@ -144,9 +146,22 @@ const searchBooks = (req, res) => {
   });
 };
 
+const getBookBoard = (req, res) => {
+  Book.findByPk(req.query.uuid, {
+    include: {
+      model: Bid,
+      attributes: ['uuid', 'condition', 'customisation', 'price'],
+      include: { model: User, attributes: ['username'] },
+    },
+  }).then((book) => {
+    res.status(200).json(book);
+  });
+};
+
 module.exports = {
   fetchBookData,
   newBook,
   getSuggestedList,
   searchBooks,
+  getBookBoard,
 };
