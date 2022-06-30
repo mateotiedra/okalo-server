@@ -45,7 +45,9 @@ module.exports = (sequelize, DataTypes) => {
 
   User.associate = (models) => {
     User.hasMany(models.bid, { onDelete: 'CASCADE' });
-    User.belongsToMany(models.institution, { through: 'User_Institutions' });
+    User.belongsToMany(models.institution, {
+      through: models.institution.UserLinkTable,
+    });
   };
 
   User.blackListAttributes = [

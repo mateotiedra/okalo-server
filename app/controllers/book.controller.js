@@ -153,9 +153,11 @@ const getBookBoard = (req, res) => {
       attributes: ['uuid', 'condition', 'customisation', 'price'],
       include: { model: User, attributes: ['username'] },
     },
-  }).then((book) => {
-    res.status(200).json(book);
-  });
+  })
+    .then((book) => {
+      res.status(200).json(book);
+    })
+    .catch(unexpectedErrorCatch(res));
 };
 
 module.exports = {

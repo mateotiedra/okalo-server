@@ -4,4 +4,5 @@ module.exports = function (app) {
   require('./user.routes')(app);
   require('./bid.routes')(app);
   require('./book.routes')(app);
+  require('./institution.routes')(app);
 };

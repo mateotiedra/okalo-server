@@ -13,10 +13,16 @@ module.exports = (sequelize, DataTypes) => {
 
   const Institution = sequelize.define('institution', attributes);
 
-  sequelize.define('User_Institutions', {}, { timestamps: false });
+  Institution.UserLinkTable = sequelize.define(
+    'User_Institutions',
+    {},
+    { timestamps: false }
+  );
 
   Institution.associate = (models) => {
-    Institution.belongsToMany(models.user, { through: 'User_Institutions' });
+    Institution.belongsToMany(models.user, {
+      through: Institution.UserLinkTable,
+    });
   };
 
   return Institution;

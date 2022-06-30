@@ -4,26 +4,43 @@ const {
   uniqueAttributeErrorCatch,
 } = require('../helpers/errorCatch.helper');
 
+const institutionController = require('./institution.controller');
+
 const User = db.user;
+const Bid = db.bid;
+const Book = db.book;
 const Op = db.Sequelize.Op;
 
 const filterUserAttributes = (user) => {
-  const attributesToSend = Object.keys(User.rawAttributes).filter(
-    (attribute) => !User.blackListAttributes.includes(attribute)
-  );
-
-  let userSafeData = {};
-
-  attributesToSend.forEach((attribute) => {
-    userSafeData[attribute] = user.dataValues[attribute];
+  User.blackListAttributes.forEach((attribute) => {
+    user.dataValues[attribute] = undefined;
   });
 
-  return userSafeData;
+  return user;
 };
 
-const getUserBoard = (req, res) => {
-  const userData = filterUserAttributes(req.user);
-  return res.status(200).json(userData);
+const getUserBoard = async (req, res) => {
+  /* req.user.dataValues.bids = (await req.user.getBids()).map((bid) => {
+    return { uuid: bid.uuid, id: bid.id, createdAt: bid.createdAt, book: bid };
+  });
+
+  req.user.dataValues.institutions = (await req.user.getInstitutions()).map(
+    (institution) => {
+      return { name: institution.name, id: institution.id };
+    }
+  ); */
+  const user = await User.findByPk(req.user.uuid, {
+    include: [
+      {
+        model: Bid,
+        attributes: ['uuid', 'condition', 'customisation', 'price'],
+        include: { model: Book, attributes: ['title', 'publisher'] },
+      },
+    ],
+    exclude: User.blackListAttributes,
+  });
+
+  return res.status(200).json(user);
 };
 
 const getEveryUserBoard = (req, res) => {
@@ -44,11 +61,16 @@ const updateUserRole = (req, res) => {
     .catch(unexpectedErrorCatch(res));
 };
 
-const updateUserParameters = (req, res) => {
-  const parametersAttr = ['email'];
+const updateUserParameters = async (req, res) => {
+  const parametersAttr = ['username', 'phone', 'instagram'];
   parametersAttr.forEach((key) => {
     if (req.body[key] !== undefined) req.user[key] = req.body[key];
   });
+
+  if (req.body.institutionIds)
+    await req.user.setInstitutions(
+      await institutionController.getInstitutionsById(req.body.institutionIds)
+    );
 
   req.user
     .save()
