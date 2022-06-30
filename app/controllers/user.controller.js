@@ -20,15 +20,6 @@ const filterUserAttributes = (user) => {
 };
 
 const getUserBoard = async (req, res) => {
-  /* req.user.dataValues.bids = (await req.user.getBids()).map((bid) => {
-    return { uuid: bid.uuid, id: bid.id, createdAt: bid.createdAt, book: bid };
-  });
-
-  req.user.dataValues.institutions = (await req.user.getInstitutions()).map(
-    (institution) => {
-      return { name: institution.name, id: institution.id };
-    }
-  ); */
   const user = await User.findByPk(req.user.uuid, {
     include: [
       {
