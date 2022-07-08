@@ -29,6 +29,7 @@ const signUp = (req, res) => {
       User.create({
         email: req.body.email,
         password: password,
+        username: req.body.username,
         emailToken: emailToken,
         emailTokenGeneratedAt: Date.now(),
       })
@@ -80,7 +81,7 @@ const sendEmailToken =
   (emailType = 'confirmation') =>
   async (req, res) => {
     const user = req.user;
-    if (Date.now() - user.emailTokenGeneratedAt < 0 * 60 * 1000)
+    if (Date.now() - user.emailTokenGeneratedAt < 2 * 60 * 1000)
       return res.status(409).json({
         message: 'Wait before sending a new email',
       });
