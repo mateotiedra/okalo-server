@@ -28,7 +28,7 @@ const getUserBoard = async (req, res) => {
         include: { model: Book, attributes: ['title', 'publisher'] },
       },
     ],
-    exclude: User.blackListAttributes,
+    attributes: { exclude: User.blackListAttributes },
   });
 
   return res.status(200).json(user);
