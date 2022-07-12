@@ -33,7 +33,7 @@ module.exports = function (app) {
   );
 
   // Change user's attributes
-  app.put('/user/update', [verifyAccessToken], controller.updateUserParameters);
+  app.put('/user', [verifyAccessToken], controller.updateUserParameters);
 
   // Delete a user account
   app.delete(

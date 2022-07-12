@@ -53,7 +53,7 @@ const updateUserRole = (req, res) => {
 };
 
 const updateUserParameters = async (req, res) => {
-  const parametersAttr = ['username', 'phone', 'instagram'];
+  const parametersAttr = ['phone', 'instagram'];
   parametersAttr.forEach((key) => {
     if (req.body[key] !== undefined) req.user[key] = req.body[key];
   });
