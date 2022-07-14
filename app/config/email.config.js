@@ -1,8 +1,8 @@
 require('dotenv').config();
 
 module.exports = {
-  WEBSITE_NAME: 'example',
-  CONFIRMATION_ROUTE: 'www.example.com/confirm-email',
+  WEBSITE_NAME: 'Okalo',
+  CONFIRMATION_ROUTE: process.env.WEBSITE_URL + '/confirm-email/email-token/',
   CONTACT_EMAIL: 'contact@example.com',
   HOST: process.env.MAIL_HOST,
   USER: process.env.MAIL_USER,
