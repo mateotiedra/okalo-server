@@ -126,6 +126,7 @@ const recover = (req, res) => {
   const user = req.user;
   res.status(200).json({
     accessToken: jwt.sign({ uuid: user.uuid }, config.SECRET),
+    username: user.username,
   });
 };
 

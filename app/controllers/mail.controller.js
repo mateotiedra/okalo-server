@@ -67,7 +67,9 @@ const sendResetPassword = ({ email, name = '', emailToken }) =>
         .then(resolve)
         .catch(reject);
     else {
-      console.log(`\n${email}'s reset password emailToken : ${emailToken}\n`);
+      console.log(
+        `\n${email}'s confirmation link : ${config.RESET_PW_ROUTE}${emailToken}\n`
+      );
       resolve();
     }
   });

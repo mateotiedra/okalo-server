@@ -3,6 +3,7 @@ require('dotenv').config();
 module.exports = {
   WEBSITE_NAME: 'Okalo',
   CONFIRMATION_ROUTE: process.env.WEBSITE_URL + '/confirm-email/email-token/',
+  RESET_PW_ROUTE: process.env.WEBSITE_URL + '/user/u/edit/change-password/',
   CONTACT_EMAIL: 'contact@example.com',
   HOST: process.env.MAIL_HOST,
   USER: process.env.MAIL_USER,
