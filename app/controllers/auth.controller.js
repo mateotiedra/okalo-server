@@ -33,19 +33,17 @@ const signUp = (req, res) => {
         emailToken: emailToken,
         emailTokenGeneratedAt: Date.now(),
       })
-        .then((user) => {
-          mailController
-            .sendAccountConfirmation({
-              email: user.email,
-              name: user.firstName,
-              emailToken: user.emailToken,
-            })
-            .then(() => {
-              res.status(201).json({
-                message:
-                  'User registered successfully! Please check your email',
-              });
-            });
+        .then(async (user) => {
+          await user.setInstitutions(req.body.institutionIds);
+          await mailController.sendAccountConfirmation({
+            email: user.email,
+            name: user.firstName,
+            emailToken: user.emailToken,
+          });
+
+          res.status(201).json({
+            message: 'User registered successfully! Please check your email',
+          });
         })
         .catch(uniqueAttributeErrorCatch(res, unexpectedErrorCatch));
     });

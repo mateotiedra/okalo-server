@@ -11,7 +11,7 @@ module.exports = function (app) {
   // Register a new user
   app.post(
     '/auth/signup',
-    [verifyRequestBody(['password', 'email'])],
+    [verifyRequestBody(['password', 'email', 'username', 'institutionIds'])],
     controller.signUp
   );
 

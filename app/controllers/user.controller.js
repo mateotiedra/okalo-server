@@ -71,6 +71,15 @@ const updateUserParameters = async (req, res) => {
     .catch(unexpectedErrorCatch(res));
 };
 
+const updateUserInstitutions = (req, res) => {
+  req.user
+    .setInstitutions(req.body.newInstitutionIds)
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch(unexpectedErrorCatch(res));
+};
+
 const deleteUser = (req, res) => {
   req.user
     .destroy()
@@ -85,5 +94,6 @@ module.exports = {
   getEveryUserBoard,
   updateUserRole,
   updateUserParameters,
+  updateUserInstitutions,
   deleteUser,
 };

@@ -2,7 +2,10 @@ const {
   verifyAccessToken,
   verifyRole,
 } = require('../middlewares/user.middleware');
-const { verifyRequestBody } = require('../middlewares/request.middleware');
+const {
+  verifyRequestBody,
+  verifyQueryParams,
+} = require('../middlewares/request.middleware');
 const controller = require('../controllers/user.controller');
 const { findUserByAttribute } = require('../middlewares/finders.middleware');
 
@@ -34,6 +37,13 @@ module.exports = function (app) {
 
   // Change user's attributes
   app.put('/user', [verifyAccessToken], controller.updateUserParameters);
+
+  // Change user institutions
+  app.put(
+    '/user/institutions',
+    [verifyAccessToken, verifyRequestBody(['newInstitutionIds'])],
+    controller.updateUserInstitutions
+  );
 
   // Delete a user account
   app.delete(
