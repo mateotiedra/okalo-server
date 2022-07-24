@@ -7,24 +7,21 @@ const sequelize = db.sequelize;
 const Institution = db.institution;
 
 const getSuggestedList = (req, res) => {
-  const match = req.query.name.toLowerCase();
+  const where = req.query.name
+    ? {
+        name: sequelize.where(
+          sequelize.fn('LOWER', sequelize.col('name')),
+          'LIKE',
+          req.query.name.toLowerCase() + '%'
+        ),
+      }
+    : undefined;
 
   Institution.findAll({
-    limit: 5,
-    where: {
-      name: sequelize.where(
-        sequelize.fn('LOWER', sequelize.col('name')),
-        'LIKE',
-        match + '%'
-      ),
-    },
+    where: where,
   })
     .then((institutions) => {
-      res.status(200).json(
-        institutions.map((institution) => {
-          return institution.name;
-        })
-      );
+      res.status(200).json(institutions);
     })
     .catch(unexpectedErrorCatch(res));
 };
