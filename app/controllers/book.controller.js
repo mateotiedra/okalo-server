@@ -77,11 +77,6 @@ const newBook = (bookData) =>
   });
 
 const getSuggestedList = (req, res) => {
-  if (!(req.query.match && req.query.attr))
-    return res
-      .status(400)
-      .json({ message: 'Bad request. Missing params (match, attr, [attr])' });
-
   const match = req.query.match.toLowerCase();
   const attr = req.query.attr;
 
