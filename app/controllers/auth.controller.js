@@ -114,6 +114,7 @@ const confirmEmail = (req, res) => {
     .then(() => {
       res.status(200).json({
         accessToken: jwt.sign({ uuid: user.uuid }, config.SECRET),
+        username: req.user.username,
       });
     })
     .catch(unexpectedErrorCatch(res));
