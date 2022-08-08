@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     customisation: {
       type: DataTypes.ENUM,
-      values: ['none', 'little', 'good'],
+      values: ['none', 'little', 'lot'],
       defaultValue: 'little',
     },
     price: {
