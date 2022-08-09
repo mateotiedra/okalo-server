@@ -34,9 +34,9 @@ const newBid = async (req, res) => {
       });
   } else {
     // Create a new book without isbn
-    if (!req.body.title || !req.body.language)
+    if (!req.body.title)
       return res.status(400).json({
-        message: 'Bad request. Missing title or language',
+        message: 'Bad request. Missing title',
       });
 
     bookUuid = await bookController
@@ -57,10 +57,12 @@ const newBid = async (req, res) => {
     condition: req.body.condition,
     customisation: req.body.customisation,
     price: req.body.price,
+    comment: req.body.comment,
     userUuid: req.user.uuid,
     bookUuid: bookUuid,
   })
     .then((bid) => {
+      bid.userUuid = undefined;
       res.status(200).json(bid);
     })
     .catch(unexpectedErrorCatch(res));
