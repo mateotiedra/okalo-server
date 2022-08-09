@@ -10,6 +10,17 @@ const Book = db.book;
 const Bid = db.bid;
 const User = db.user;
 
+const extractNeededData = (itemData) => {
+  console.log();
+  return {
+    title: itemData.title,
+    author: itemData.authors && itemData.authors.length && itemData.authors[0],
+    publisher: itemData.publisher,
+    coverLink: itemData.imageLinks && itemData.imageLinks.thumbnail,
+    language: itemData.language,
+  };
+};
+
 const fetchBookData = async (isbn) => {
   // Fetch to the saved books first
   let savedBook;
@@ -23,7 +34,7 @@ const fetchBookData = async (isbn) => {
     throw error;
   }
 
-  if (savedBook) return savedBook.uuid;
+  if (savedBook) return savedBook;
 
   // Fetch data from an outside api
   let data;
@@ -50,21 +61,10 @@ const fetchBookData = async (isbn) => {
   }
 
   try {
-    const { uuid } = await Book.create({ isbn, ...bookData });
-    return uuid;
+    return await Book.create({ isbn, ...bookData });
   } catch (error) {
     throw error;
   }
-};
-
-const extractNeededData = (itemData) => {
-  return {
-    title: itemData.title,
-    author: itemData.authors && itemData.authors.length && itemData.authors[0],
-    publisher: itemData.publisher,
-    coverLink: itemData.imageLinks && itemData.imageLinks.thumbnail,
-    language: itemData.language,
-  };
 };
 
 const newBook = (bookData) =>
@@ -155,10 +155,22 @@ const getBookBoard = (req, res) => {
     .catch(unexpectedErrorCatch(res));
 };
 
+const getBookByIsbn = (req, res) => {
+  fetchBookData(req.query.isbn)
+    .then((bookData) => {
+      res.status(200).json(bookData);
+    })
+    .catch((err) => {
+      if (err.message === 404) res.status(404).json({ message: 'not found' });
+      else unexpectedErrorCatch(res)(err);
+    });
+};
+
 module.exports = {
   fetchBookData,
   newBook,
   getSuggestedList,
   searchBooks,
   getBookBoard,
+  getBookByIsbn,
 };

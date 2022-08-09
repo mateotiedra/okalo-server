@@ -31,7 +31,7 @@ const newBid = async (req, res) => {
         err.message == 404
           ? res.status(404).json({ message: 'Book not found with the ISBN' })
           : unexpectedErrorCatch(res)(err);
-      });
+      }).uuid;
   } else {
     // Create a new book without isbn
     if (!req.body.title)
