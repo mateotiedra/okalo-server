@@ -49,6 +49,8 @@ const newBid = async (req, res) => {
       .catch(unexpectedErrorCatch(res));
   }
 
+  console.log(bookUuid);
+
   // Quit if the isbn found nothing and the new book from given params (title, ...) failed
   if (!bookUuid) return;
 
