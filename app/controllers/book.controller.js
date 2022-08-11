@@ -10,8 +10,9 @@ const Book = db.book;
 const Bid = db.bid;
 const User = db.user;
 
+const cleanIsbn = (isbn) => isbn.replaceAll('-', '');
+
 const extractNeededData = (itemData) => {
-  console.log();
   return {
     title: itemData.title,
     author: itemData.authors && itemData.authors.length && itemData.authors[0],
@@ -22,6 +23,7 @@ const extractNeededData = (itemData) => {
 };
 
 const fetchBookData = async (isbn) => {
+  isbn = cleanIsbn(isbn);
   // Fetch to the saved books first
   let savedBook;
   try {
@@ -65,6 +67,18 @@ const fetchBookData = async (isbn) => {
   } catch (error) {
     throw error;
   }
+};
+
+const getBookByIsbn = (req, res) => {
+  const isbn = cleanIsbn(req.query.isbn);
+  fetchBookData(isbn)
+    .then((bookData) => {
+      res.status(200).json(bookData);
+    })
+    .catch((err) => {
+      if (err.message === 404) res.status(404).json({ message: 'not found' });
+      else unexpectedErrorCatch(res)(err);
+    });
 };
 
 const newBook = (bookData) =>
@@ -153,17 +167,6 @@ const getBookBoard = (req, res) => {
       res.status(200).json(book);
     })
     .catch(unexpectedErrorCatch(res));
-};
-
-const getBookByIsbn = (req, res) => {
-  fetchBookData(req.query.isbn)
-    .then((bookData) => {
-      res.status(200).json(bookData);
-    })
-    .catch((err) => {
-      if (err.message === 404) res.status(404).json({ message: 'not found' });
-      else unexpectedErrorCatch(res)(err);
-    });
 };
 
 module.exports = {

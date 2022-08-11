@@ -22,7 +22,7 @@ const filterBidAttributes = (bid) => {
 };
 
 const newBid = async (req, res) => {
-  let bookUuid;
+  var bookUuid;
   if (req.body.isbn) {
     // Go fetch the book data
     bookUuid = await bookController
@@ -48,6 +48,8 @@ const newBid = async (req, res) => {
       })
       .catch(unexpectedErrorCatch(res));
   }
+
+  console.log(bookUuid);
 
   // Quit if the isbn found nothing and the new book from given params (title, ...) failed
   if (!bookUuid) return;
