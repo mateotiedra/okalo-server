@@ -76,7 +76,7 @@ const getBookByIsbn = (req, res) => {
       res.status(200).json(bookData);
     })
     .catch((err) => {
-      if (err.message === 404) res.status(404).json({ message: 'not found' });
+      if (err.message == 404) res.status(404).json({ message: 'not found' });
       else unexpectedErrorCatch(res)(err);
     });
 };
