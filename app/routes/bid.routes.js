@@ -2,7 +2,10 @@ const {
   verifyAccessToken,
   verifyOwnership,
 } = require('../middlewares/user.middleware');
-const { verifyRequestBody } = require('../middlewares/request.middleware');
+const {
+  verifyRequestBody,
+  verifyQueryParams,
+} = require('../middlewares/request.middleware');
 const { findBidByAttribute } = require('../middlewares/finders.middleware');
 
 const controller = require('../controllers/bid.controller');
@@ -20,7 +23,7 @@ module.exports = function (app) {
   );
 
   // Get the bid's basics infos
-  app.get('/bid', [findBidByAttribute('uuid')], controller.getBidBoard);
+  app.get('/bid', [verifyQueryParams(['uuid'])], controller.getBidBoard);
 
   // Change bid's attributes
   app.put(

@@ -9,7 +9,7 @@ const institutionController = require('./institution.controller');
 const User = db.user;
 const Bid = db.bid;
 const Book = db.book;
-const Op = db.Sequelize.Op;
+const Institution = db.institution;
 
 const filterUserAttributes = (user) => {
   User.blackListAttributes.forEach((attribute) => {
@@ -24,9 +24,10 @@ const getUserBoard = async (req, res) => {
     include: [
       {
         model: Bid,
-        attributes: ['uuid', 'condition', 'customisation', 'price'],
-        include: { model: Book, attributes: ['title', 'publisher'] },
+        attributes: { exclude: ['useruuid'] },
+        include: { model: Book, exclude: [Bid.blackListAttributes] },
       },
+      { model: Institution, attributes: ['name'] },
     ],
     attributes: { exclude: User.blackListAttributes },
   });

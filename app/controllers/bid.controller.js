@@ -4,6 +4,9 @@ const { unexpectedErrorCatch } = require('../helpers/errorCatch.helper');
 const bookController = require('../controllers/book.controller');
 
 const Bid = db.bid;
+const User = db.user;
+const Book = db.book;
+const Institution = db.institution;
 
 const blackListAttributes = ['userUuid', 'deletedAt'];
 
@@ -49,8 +52,6 @@ const newBid = async (req, res) => {
       .catch(unexpectedErrorCatch(res));
   }
 
-  console.log(bookUuid);
-
   // Quit if the isbn found nothing and the new book from given params (title, ...) failed
   if (!bookUuid) return;
 
@@ -71,7 +72,21 @@ const newBid = async (req, res) => {
 };
 
 const getBidBoard = (req, res) => {
-  return res.status(200).json(filterBidAttributes(req.bid));
+  Bid.findByPk(req.query.uuid, {
+    attributes: { exclude: blackListAttributes },
+    include: [
+      {
+        model: User,
+        attributes: ['username'],
+        include: { model: Institution, attributes: ['name'] },
+      },
+      { model: Book },
+    ],
+  })
+    .then((book) => {
+      res.status(200).json(book);
+    })
+    .catch(unexpectedErrorCatch(res));
 };
 
 const updateBidParameters = (req, res) => {

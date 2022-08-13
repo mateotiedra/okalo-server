@@ -17,7 +17,12 @@ const extractNeededData = (itemData) => {
     title: itemData.title,
     author: itemData.authors && itemData.authors.length && itemData.authors[0],
     publisher: itemData.publisher,
-    coverLink: itemData.imageLinks && itemData.imageLinks.thumbnail,
+    coverLink:
+      itemData.imageLinks &&
+      (itemData.imageLinks['large'] ||
+        itemData.imageLinks['medium'] ||
+        itemData.imageLinks['small'] ||
+        itemData.imageLinks['thumbnail']),
     language: itemData.language,
   };
 };
