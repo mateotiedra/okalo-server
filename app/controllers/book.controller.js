@@ -24,6 +24,7 @@ const extractNeededData = (itemData) => {
         itemData.imageLinks['small'] ||
         itemData.imageLinks['thumbnail']),
     language: itemData.language,
+    // TODO : add retail price
   };
 };
 
