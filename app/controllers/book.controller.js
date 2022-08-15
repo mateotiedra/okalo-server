@@ -111,11 +111,11 @@ const getSuggestedList = (req, res) => {
             match + '%'
           ),
         },
-        {
+        /* {
           isbn: {
             [Op.ne]: null,
           },
-        },
+        }, */
       ],
     },
   })
@@ -130,6 +130,7 @@ const getSuggestedList = (req, res) => {
 };
 
 const searchBooks = (req, res) => {
+  // Acc that and or list if req.query.allMatch is not true
   let andList = [];
   for (const attr of ['title', 'author', 'publisher', 'language']) {
     if (!req.query[attr]) continue;
@@ -148,7 +149,7 @@ const searchBooks = (req, res) => {
 
   Book.findAll({
     where: {
-      [Op.and]: andList,
+      [req.query.allMatch ? Op.and : Op.or]: andList,
     },
     include: 'bids',
   }).then((books) => {
