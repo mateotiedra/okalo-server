@@ -9,6 +9,7 @@ const sequelize = db.sequelize;
 const Book = db.book;
 const Bid = db.bid;
 const User = db.user;
+const Institution = db.institution;
 
 const cleanIsbn = (isbn) => isbn.replaceAll('-', '');
 
@@ -167,7 +168,13 @@ const getBookBoard = (req, res) => {
     include: {
       model: Bid,
       attributes: ['uuid', 'condition', 'customisation', 'price'],
-      include: { model: User, attributes: ['username'] },
+      include: [
+        {
+          model: User,
+          attributes: ['username'],
+          include: [{ model: Institution, attributes: ['name'] }],
+        },
+      ],
     },
   })
     .then((book) => {
