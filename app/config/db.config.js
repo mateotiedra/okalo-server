@@ -1,7 +1,10 @@
 require('dotenv').config();
+const config = require('./server.config.js');
 
 module.exports = {
-  DB_CONNECTION_URL: process.env.DB_CONNECTION_URL,
+  DB_CONNECTION_URL: config.PRODUCTION
+    ? process.env.JAWSDB_URL
+    : process.env.DEVDB_URL,
   DIALECT: 'mysql',
   POOL: {
     max: 5,

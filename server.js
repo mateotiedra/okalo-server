@@ -7,7 +7,7 @@ const app = express();
 
 const cors = require('cors');
 
-var whitelist = [];
+var whitelist = ['https://www.okalo.ch/', 'http://www.okalo.ch/'];
 
 // Cors options
 var corsOptions = {
