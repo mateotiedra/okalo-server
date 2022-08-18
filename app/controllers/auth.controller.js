@@ -24,12 +24,11 @@ const signUp = (req, res) => {
     // Generate the confirmation token
     crypto.randomBytes(16, (err, buf) => {
       const emailToken = buf.toString('hex');
-
       // Create the user
       User.create({
         email: req.body.email,
         password: password,
-        username: req.body.username,
+        username: req.body.username.toLocaleLowerCase(),
         emailToken: emailToken,
         emailTokenGeneratedAt: Date.now(),
       })
