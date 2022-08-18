@@ -7,7 +7,11 @@ const app = express();
 
 const cors = require('cors');
 
-var whitelist = ['https://www.okalo.ch/', 'http://www.okalo.ch/'];
+var whitelist = [
+  'https://www.okalo.ch',
+  'http://www.okalo.ch',
+  'https://62fe8324b780fa006f5a77d5--determined-meninsky-77c9ea.netlify.app',
+];
 
 // Cors options
 var corsOptions = {
