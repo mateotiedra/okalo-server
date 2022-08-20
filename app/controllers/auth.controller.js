@@ -34,14 +34,18 @@ const signUp = (req, res) => {
       })
         .then(async (user) => {
           await user.setInstitutions(req.body.institutionIds);
-          await mailController.sendAccountConfirmation({
+          /* await mailController.sendAccountConfirmation({
             email: user.email,
             name: user.firstName,
             emailToken: user.emailToken,
+          }); res.status(201).json({
+            message: 'User registered successfully! Please check your email',
           });
+          */
 
           res.status(201).json({
-            message: 'User registered successfully! Please check your email',
+            message: 'User registered successfully! without-email',
+            emailToken: user.emailToken,
           });
         })
         .catch(uniqueAttributeErrorCatch(res, unexpectedErrorCatch));
