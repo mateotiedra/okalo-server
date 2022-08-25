@@ -112,12 +112,29 @@ const deleteBid = async (req, res) => {
     unexpectedErrorCatch(res)(err);
   }
 
-  req.bid
-    .destroy()
-    .then(() => {
-      res.status(204).send();
-    })
-    .catch(unexpectedErrorCatch(res));
+  // Save bid's book
+  var book;
+  try {
+    book = await req.bid.getBook();
+  } catch (err) {
+    unexpectedErrorCatch(res)(err);
+  }
+
+  // Delete bid
+  try {
+    await req.bid.destroy();
+    res.status(204).send();
+  } catch (err) {
+    unexpectedErrorCatch(res)(err);
+  }
+
+  // Delete book if it has no more bid and no isbn
+  try {
+    if (book.isbn || (await book.getBids()).length > 0) return;
+    await book.destroy();
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 module.exports = {

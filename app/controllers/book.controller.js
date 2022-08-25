@@ -183,6 +183,25 @@ const getBookBoard = (req, res) => {
     .catch(unexpectedErrorCatch(res));
 };
 
+// Admin
+const cleanNoISBNBooks = (req, res) => {
+  Book.findAll({
+    where: {
+      isbn: null,
+    },
+    include: 'bids',
+  })
+    .then(async (books) => {
+      for (const book of books) {
+        if (book.bids && book.bids.length === 0) {
+          await book.destroy();
+        }
+      }
+      res.status(200).json({ message: 'books deleted' });
+    })
+    .catch(unexpectedErrorCatch(res));
+};
+
 module.exports = {
   fetchBookData,
   newBook,
@@ -190,4 +209,5 @@ module.exports = {
   searchBooks,
   getBookBoard,
   getBookByIsbn,
+  cleanNoISBNBooks,
 };
