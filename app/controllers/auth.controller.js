@@ -28,7 +28,7 @@ const signUp = (req, res) => {
       User.create({
         email: req.body.email,
         password: password,
-        username: req.body.username.toLocaleLowerCase(),
+        username: req.body.username.replace(' ', '').toLocaleLowerCase().s,
         emailToken: emailToken,
         emailTokenGeneratedAt: Date.now(),
       })
