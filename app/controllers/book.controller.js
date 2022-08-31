@@ -153,6 +153,20 @@ const searchBooks = (req, res) => {
       [req.query.allMatch ? Op.and : Op.or]: andList,
     },
     include: 'bids',
+    attributes: {
+      include: [
+        [
+          db.sequelize.literal(
+            '(SELECT COUNT(*) FROM Bids WHERE Bids.bookUuid = Book.uuid)'
+          ),
+          'n_bids',
+        ],
+      ],
+    },
+    order: [
+      [db.sequelize.literal('n_bids'), 'DESC'],
+      ['isbn', 'DESC'],
+    ],
   }).then((books) => {
     const safeBooks = books.map((book) => {
       book.dataValues.nbrBids = book.bids.length;
