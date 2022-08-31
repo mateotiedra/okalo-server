@@ -23,6 +23,8 @@ module.exports = function (app) {
     controller.getEveryUserBoard
   );
 
+  app.get('/user/best', controller.getBest);
+
   // Change the user role
   app.put(
     '/user/update/role',

@@ -43,6 +43,27 @@ const getEveryUserBoard = (req, res) => {
     .catch(unexpectedErrorCatch(res));
 };
 
+const getBest = (req, res) => {
+  User.findAll({
+    limit: (req.query && req.query.limit && parseInt(req.query.limit)) || 5,
+    attributes: [
+      [
+        db.sequelize.literal(
+          '(SELECT COUNT(*) FROM Bids WHERE Bids.userUuid = User.uuid)'
+        ),
+        'n_bids',
+      ],
+      'username',
+      //[db.sequelize.fn('COUNT', db.sequelize.col('bids')), 'n_bids'],
+    ],
+    order: [[db.sequelize.literal('n_bids'), 'DESC']],
+  })
+    .then((users) => {
+      res.status(200).json(users);
+    })
+    .catch(unexpectedErrorCatch(res));
+};
+
 const updateUserRole = (req, res) => {
   req.user.role = req.body.newRole;
   req.user
@@ -97,4 +118,5 @@ module.exports = {
   updateUserParameters,
   updateUserInstitutions,
   deleteUser,
+  getBest,
 };

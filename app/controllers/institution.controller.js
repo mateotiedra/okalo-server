@@ -1,3 +1,4 @@
+const { default: axios } = require('axios');
 const { unexpectedErrorCatch } = require('../helpers/errorCatch.helper');
 
 const db = require('../models/db.model');
@@ -45,7 +46,34 @@ const getInstitutionsById = async (ids) => {
   }
 };
 
+const getBest = (req, res) => {
+  /* Institution.findAll({
+    limit: (req.query && req.query.limit && parseInt(req.query.limit)) || 1,
+    attributes: [
+      [
+        db.sequelize.literal(
+          `(SELECT users.uuid
+          FROM users
+          INNER JOIN user_institutions
+          ON Users.uuid = user_institutions.userUuid
+          WHERE user_institutions.institutionId = institution.id)`
+          //'SELECT COUNT(*) FROM Bids WHERE Bids.userUuid = institutions_Users.uuid'
+        ),
+        'n_bids',
+      ],
+      'name',
+    ],
+    //order: [[db.sequelize.literal('n_users'), 'DESC']],
+  })
+    .then((institutions) => {
+      console.log(institutions);
+      res.status(200).json(institutions);
+    })
+    .catch(unexpectedErrorCatch(res)); */
+};
+
 module.exports = {
   getSuggestedList,
   getInstitutionsById,
+  getBest,
 };

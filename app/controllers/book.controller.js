@@ -202,6 +202,37 @@ const cleanNoISBNBooks = (req, res) => {
     .catch(unexpectedErrorCatch(res));
 };
 
+const getBest = (req, res) => {
+  Book.findAll({
+    limit: (req.query && req.query.limit && parseInt(req.query.limit)) || 5,
+    where: db.sequelize.where(
+      db.sequelize.literal(
+        '(SELECT COUNT(*) FROM Bids WHERE Bids.bookUuid = Book.uuid AND Bids.status="sold" /* AND Book.coverLink IS NOT NULL */)'
+      ),
+      Op.gt,
+      0
+    ),
+    attributes: [
+      [
+        db.sequelize.literal(
+          '(SELECT COUNT(*) FROM Bids WHERE Bids.bookUuid = Book.uuid)'
+        ),
+        'n_bids',
+      ],
+      'title',
+      'coverLink',
+      'isbn',
+      'uuid',
+      //[db.sequelize.fn('COUNT', db.sequelize.col('bids')), 'n_bids'],
+    ],
+    order: [[db.sequelize.literal('n_bids'), 'DESC']],
+  })
+    .then((books) => {
+      res.status(200).json(books);
+    })
+    .catch(unexpectedErrorCatch(res));
+};
+
 module.exports = {
   fetchBookData,
   newBook,
@@ -210,4 +241,5 @@ module.exports = {
   getBookBoard,
   getBookByIsbn,
   cleanNoISBNBooks,
+  getBest,
 };

@@ -17,4 +17,7 @@ module.exports = function (app) {
 
   // Check if the book with this isbn exists and if it does return the uuid
   app.get('/book/isbn', verifyQueryParams(['isbn']), controller.getBookByIsbn);
+
+  // Get the books more soold
+  app.get('/book/best', controller.getBest);
 };
