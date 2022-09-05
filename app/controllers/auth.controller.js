@@ -26,7 +26,7 @@ const signUp = (req, res) => {
       const emailToken = buf.toString('hex');
       // Create the user
       User.create({
-        email: req.body.email,
+        email: req.body.email.toLocaleLowerCase(),
         password: password,
         username: req.body.username.trim().toLocaleLowerCase(),
         emailToken: emailToken,
