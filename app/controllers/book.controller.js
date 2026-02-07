@@ -32,26 +32,16 @@ const extractNeededData = (itemData) => {
 const fetchBookData = async (isbn) => {
   isbn = cleanIsbn(isbn);
   // Fetch to the saved books first
-  let savedBook;
-  try {
-    savedBook = await Book.findOne({
-      where: {
-        isbn: isbn,
-      },
-    });
-  } catch (error) {
-    throw error;
-  }
+  const savedBook = await Book.findOne({
+    where: {
+      isbn: isbn,
+    },
+  });
 
   if (savedBook) return savedBook;
 
   // Fetch data from an outside api
-  let data;
-  try {
-    ({ data } = await axios.get(config.ISBN_API_URL + isbn));
-  } catch (error) {
-    throw error;
-  }
+  let { data } = await axios.get(config.ISBN_API_URL + isbn);
 
   // If nothing is returned leave with an error
   if (!(data && data.items && data.items.length && data.items[0].volumeInfo))
@@ -69,11 +59,7 @@ const fetchBookData = async (isbn) => {
     }
   }
 
-  try {
-    return await Book.create({ isbn, ...bookData });
-  } catch (error) {
-    throw error;
-  }
+  return await Book.create({ isbn, ...bookData });
 };
 
 const getBookByIsbn = (req, res) => {
