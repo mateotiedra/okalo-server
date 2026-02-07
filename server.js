@@ -1,3 +1,4 @@
+require('dotenv').config({ path: __dirname + '/.env' });
 const config = require('./app/config/server.config.js');
 
 const express = require('express');
@@ -8,9 +9,10 @@ const app = express();
 const cors = require('cors');
 
 var whitelist = [
+  'https://okalo.ch',
   'https://www.okalo.ch',
+  'http://okalo.ch',
   'http://www.okalo.ch',
-  'https://62fe8324b780fa006f5a77d5--determined-meninsky-77c9ea.netlify.app',
 ];
 
 // Cors options
@@ -52,12 +54,17 @@ app.use(express.json());
 // Database
 const db = require('./app/models/db.model');
 
-db.sequelize.sync({ force: config.RESET_DB }).then(() => {
-  if (config.RESET_DB) {
-    console.log('Drop and Resync Database with { force: true }');
-    initial();
-  }
-});
+// Skip sync in production - database is already set up
+if (!config.PRODUCTION) {
+  db.sequelize.sync({ force: config.RESET_DB }).then(() => {
+    if (config.RESET_DB) {
+      console.log('Drop and Resync Database with { force: true }');
+      initial();
+    }
+  });
+} else {
+  console.log('Production mode - skipping database sync');
+}
 
 // simple route
 app.get('/', (req, res) => {
