@@ -17,6 +17,9 @@
   },
   "author": "Mateo Tiedra",
   "license": "ISC",
+  "engines": {
+    "node": ">=18"
+  },
   "bugs": {
     "url": "https://github.com/mateotiedra/backend-auth-template/issues"
   },

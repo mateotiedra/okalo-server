@@ -7,6 +7,9 @@ set -e
 echo "🔍 Pre-Push Self-Review"
 echo "========================"
 
+# Check dependencies
+command -v jq >/dev/null || { echo "❌ jq required (apt install jq)"; exit 1; }
+
 # Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -27,7 +30,7 @@ fi
 
 # 2. Run linter
 echo -e "\n${YELLOW}2. ESLint${NC}"
-if npm run lint 2>/dev/null; then
+if npm run lint; then
     echo -e "${GREEN}✓ Linting passed${NC}"
 else
     echo -e "${RED}⚠ Linting issues found (see above)${NC}"
@@ -36,8 +39,9 @@ fi
 
 # 3. Security audit
 echo -e "\n${YELLOW}3. Security Audit${NC}"
-AUDIT_CRITICAL=$(npm audit --json 2>/dev/null | jq '.metadata.vulnerabilities.critical // 0')
-AUDIT_HIGH=$(npm audit --json 2>/dev/null | jq '.metadata.vulnerabilities.high // 0')
+AUDIT_JSON=$(npm audit --json 2>&1) || true
+AUDIT_CRITICAL=$(echo "$AUDIT_JSON" | jq '.metadata.vulnerabilities.critical // 0')
+AUDIT_HIGH=$(echo "$AUDIT_JSON" | jq '.metadata.vulnerabilities.high // 0')
 echo "Critical: $AUDIT_CRITICAL, High: $AUDIT_HIGH"
 if [[ "$AUDIT_CRITICAL" -gt 0 ]]; then
     echo -e "${RED}⚠ Critical vulnerabilities detected${NC}"

@@ -1,10 +1,14 @@
 const js = require("@eslint/js");
 
 module.exports = [
+  // Global ignores must be its own config object
+  { ignores: ["node_modules/", "database_*.sql"] },
+  
   js.configs.recommended,
+  
   {
     languageOptions: {
-      ecmaVersion: 2021,
+      ecmaVersion: 2024,
       sourceType: "commonjs",
       globals: {
         console: "readonly",
@@ -23,7 +27,6 @@ module.exports = [
       "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
       "no-console": "off",
       "semi": ["error", "always"],
-    },
-    ignores: ["node_modules/"]
+    }
   }
 ];
