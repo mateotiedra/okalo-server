@@ -3,6 +3,9 @@ const config = require('../config/db.config.js');
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(config.DB_CONNECTION_URL, {
   dialect: config.DIALECT,
+  define: {
+    freezeTableName: true,  // Don't pluralize table names
+  }
 });
 /* const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
   host: config.HOST,

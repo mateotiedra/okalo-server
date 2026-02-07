@@ -49,7 +49,7 @@ const getBest = (req, res) => {
     attributes: [
       [
         db.sequelize.literal(
-          '(SELECT COUNT(*) FROM Bids WHERE Bids.userUuid = User.uuid)'
+          '(SELECT COUNT(*) FROM bid WHERE bid.userUuid = user.uuid)'
         ),
         'n_bids',
       ],

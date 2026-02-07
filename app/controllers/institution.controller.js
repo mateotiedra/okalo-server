@@ -57,7 +57,7 @@ const getBest = (req, res) => {
           INNER JOIN user_institutions
           ON Users.uuid = user_institutions.userUuid
           WHERE user_institutions.institutionId = institution.id)`
-          //'SELECT COUNT(*) FROM Bids WHERE Bids.userUuid = institutions_Users.uuid'
+          //'SELECT COUNT(*) FROM bid WHERE bid.userUuid = institutions_Users.uuid'
         ),
         'n_bids',
       ],
