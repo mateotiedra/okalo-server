@@ -32,26 +32,16 @@ const extractNeededData = (itemData) => {
 const fetchBookData = async (isbn) => {
   isbn = cleanIsbn(isbn);
   // Fetch to the saved books first
-  let savedBook;
-  try {
-    savedBook = await Book.findOne({
-      where: {
-        isbn: isbn,
-      },
-    });
-  } catch (error) {
-    throw error;
-  }
+  const savedBook = await Book.findOne({
+    where: {
+      isbn: isbn,
+    },
+  });
 
   if (savedBook) return savedBook;
 
   // Fetch data from an outside api
-  let data;
-  try {
-    ({ data } = await axios.get(config.ISBN_API_URL + isbn));
-  } catch (error) {
-    throw error;
-  }
+  let { data } = await axios.get(config.ISBN_API_URL + isbn);
 
   // If nothing is returned leave with an error
   if (!(data && data.items && data.items.length && data.items[0].volumeInfo))
@@ -69,11 +59,7 @@ const fetchBookData = async (isbn) => {
     }
   }
 
-  try {
-    return await Book.create({ isbn, ...bookData });
-  } catch (error) {
-    throw error;
-  }
+  return await Book.create({ isbn, ...bookData });
 };
 
 const getBookByIsbn = (req, res) => {
@@ -157,7 +143,7 @@ const searchBooks = (req, res) => {
       include: [
         [
           db.sequelize.literal(
-            '(SELECT COUNT(*) FROM Bids WHERE Bids.bookUuid = Book.uuid)'
+            '(SELECT COUNT(*) FROM bid WHERE bid.bookUuid = book.uuid)'
           ),
           'n_bids',
         ],
@@ -221,7 +207,7 @@ const getBest = (req, res) => {
     limit: (req.query && req.query.limit && parseInt(req.query.limit)) || 5,
     where: db.sequelize.where(
       db.sequelize.literal(
-        '(SELECT COUNT(*) FROM Bids WHERE Bids.bookUuid = Book.uuid AND Bids.status="sold" /* AND Book.coverLink IS NOT NULL */)'
+        '(SELECT COUNT(*) FROM bid WHERE bid.bookUuid = book.uuid AND bid.status="sold" /* AND book.coverLink IS NOT NULL */)'
       ),
       Op.gt,
       0
@@ -229,7 +215,7 @@ const getBest = (req, res) => {
     attributes: [
       [
         db.sequelize.literal(
-          '(SELECT COUNT(*) FROM Bids WHERE Bids.bookUuid = Book.uuid)'
+          '(SELECT COUNT(*) FROM bid WHERE bid.bookUuid = book.uuid)'
         ),
         'n_bids',
       ],

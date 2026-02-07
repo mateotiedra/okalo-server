@@ -100,3 +100,5 @@ dist
 
 # TernJS port file
 .tern-port
+database_backup.sql
+database_clean.sql

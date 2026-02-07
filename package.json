@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "lint": "eslint . --ignore-pattern node_modules/",
+    "lint:fix": "eslint . --fix --ignore-pattern node_modules/",
+    "review": "bash scripts/pre-push-review.sh"
   },
   "repository": {
     "type": "git",
@@ -14,6 +17,9 @@
   },
   "author": "Mateo Tiedra",
   "license": "ISC",
+  "engines": {
+    "node": ">=18"
+  },
   "bugs": {
     "url": "https://github.com/mateotiedra/backend-auth-template/issues"
   },
@@ -33,5 +39,9 @@
     "nodemailer": "^6.7.2",
     "nodemon": "^2.0.15",
     "sequelize": "^6.16.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.0.0"
   }
 }

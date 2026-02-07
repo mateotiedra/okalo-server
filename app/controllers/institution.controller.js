@@ -1,4 +1,4 @@
-const { default: axios } = require('axios');
+// const { default: axios } = require('axios');  // TODO: Remove if unused
 const { unexpectedErrorCatch } = require('../helpers/errorCatch.helper');
 
 const db = require('../models/db.model');
@@ -34,19 +34,15 @@ const getInstitutionsById = async (ids) => {
 
   console.log(orList);
 
-  try {
-    return await Institution.findAll({
-      limit: 5,
-      where: {
-        [Op.or]: orList,
-      },
-    });
-  } catch (error) {
-    throw error;
-  }
+  return await Institution.findAll({
+    limit: 5,
+    where: {
+      [Op.or]: orList,
+    },
+  });
 };
 
-const getBest = (req, res) => {
+const getBest = (_req, _res) => {
   /* Institution.findAll({
     limit: (req.query && req.query.limit && parseInt(req.query.limit)) || 1,
     attributes: [
@@ -57,7 +53,7 @@ const getBest = (req, res) => {
           INNER JOIN user_institutions
           ON Users.uuid = user_institutions.userUuid
           WHERE user_institutions.institutionId = institution.id)`
-          //'SELECT COUNT(*) FROM Bids WHERE Bids.userUuid = institutions_Users.uuid'
+          //'SELECT COUNT(*) FROM bid WHERE bid.userUuid = institutions_Users.uuid'
         ),
         'n_bids',
       ],

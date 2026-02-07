@@ -3,6 +3,11 @@ const config = require('../config/db.config.js');
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(config.DB_CONNECTION_URL, {
   dialect: config.DIALECT,
+  define: {
+    // IMPORTANT: Production DB uses singular lowercase table names (user, book, bid, institution)
+    // This matches the existing schema. Do NOT change without migrating the database.
+    freezeTableName: true,
+  }
 });
 /* const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
   host: config.HOST,
