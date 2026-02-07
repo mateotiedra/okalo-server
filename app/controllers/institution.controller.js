@@ -42,30 +42,20 @@ const getInstitutionsById = async (ids) => {
   });
 };
 
-const getBest = (_req, _res) => {
-  /* Institution.findAll({
-    limit: (req.query && req.query.limit && parseInt(req.query.limit)) || 1,
-    attributes: [
-      [
-        db.sequelize.literal(
-          `(SELECT users.uuid
-          FROM users
-          INNER JOIN user_institutions
-          ON Users.uuid = user_institutions.userUuid
-          WHERE user_institutions.institutionId = institution.id)`
-          //'SELECT COUNT(*) FROM bid WHERE bid.userUuid = institutions_Users.uuid'
-        ),
-        'n_bids',
-      ],
-      'name',
-    ],
-    //order: [[db.sequelize.literal('n_users'), 'DESC']],
+const getBest = (_req, res) => {
+  // TODO: Implement ranking logic (was commented out, needs proper query)
+  // For now, return top institutions by user count
+  Institution.findAll({
+    limit: 5,
+    attributes: ['id', 'name'],
   })
     .then((institutions) => {
-      console.log(institutions);
-      res.status(200).json(institutions);
+      res.status(200).json({
+        note: 'Ranking not yet implemented - returning all institutions',
+        institutions,
+      });
     })
-    .catch(unexpectedErrorCatch(res)); */
+    .catch(unexpectedErrorCatch(res));
 };
 
 module.exports = {

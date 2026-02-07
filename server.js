@@ -6,6 +6,11 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
+// Health check endpoint - defined BEFORE CORS for monitoring tools
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: Date.now() });
+});
+
 const cors = require('cors');
 
 var whitelist = [
@@ -68,7 +73,7 @@ if (!config.PRODUCTION) {
 
 // simple route
 app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to the api.' });
+  res.json({ message: 'Welcome to the api.', version: '1.0.0' });
 });
 
 app.use(function (req, res, next) {
@@ -81,6 +86,25 @@ app.use(function (req, res, next) {
 
 // routes
 require('./app/routes')(app);
+
+// Error handling middleware - hide stack traces in production
+app.use((err, req, res, _next) => {
+  console.error(err.stack);
+  const status = err.status || 500;
+  const response = {
+    error: err.message || 'Internal Server Error',
+  };
+  // Only include stack trace in development
+  if (!config.PRODUCTION) {
+    response.stack = err.stack;
+  }
+  res.status(status).json(response);
+});
+
+// 404 handler - return JSON instead of HTML
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not found', path: req.path });
+});
 
 // set port, listen for requests
 const PORT = config.PORT;

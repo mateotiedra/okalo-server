@@ -13,8 +13,9 @@ module.exports = (sequelize, DataTypes) => {
 
   const Institution = sequelize.define('institution', attributes);
 
+  // NOTE: Table name must match existing DB schema (lowercase)
   Institution.UserLinkTable = sequelize.define(
-    'User_Institutions',
+    'user_institutions',
     {},
     { timestamps: false }
   );
