@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
   push:
@@ -34,11 +34,21 @@ jobs:
         run: npm test --if-present
         continue-on-error: true  # No tests yet - will become blocking once tests exist
 
-  # Future: deploy job (manual trigger)
-  # deploy:
-  #   needs: lint-and-audit
-  #   runs-on: ubuntu-latest
-  #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-  #   steps:
-  #     - name: Deploy to production
-  #       run: echo "Deploy step here"
+  deploy:
+    needs: lint-and-audit
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+      - name: Deploy to production
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            cd /root/.openclaw/workspace/okalo-server
+            git pull origin main
+            npm ci --production
+            pm2 restart okalo-api
+            echo "Deployed at $(date)"
