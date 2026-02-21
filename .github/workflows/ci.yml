@@ -1,10 +1,10 @@
-name: CI/CD
+name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, develop, prod]
   pull_request:
-    branches: [main]
+    branches: [main, prod]
 
 jobs:
   lint-and-audit:
@@ -24,31 +24,13 @@ jobs:
       
       - name: Run ESLint
         run: npm run lint --if-present
-        # Lint errors block the build - code quality gate
       
       - name: Security audit
         run: npm audit --audit-level=critical
-        continue-on-error: true  # Known issues tracked in TAKY-NOTES.md - major version bumps needed
+        continue-on-error: true
       
       - name: Run tests
         run: npm test --if-present
-        continue-on-error: true  # No tests yet - will become blocking once tests exist
+        continue-on-error: true
 
-  deploy:
-    needs: lint-and-audit
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    
-    steps:
-      - name: Deploy to production
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          script: |
-            cd /root/.openclaw/workspace/okalo-server
-            git pull origin main
-            npm ci --production
-            pm2 restart okalo-api
-            echo "Deployed at $(date)"
+# Deploy handled by Dokploy (auto-deploy on push to prod branch)
