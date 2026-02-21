@@ -6,4 +6,5 @@ module.exports = function (app) {
   require('./book.routes')(app);
   require('./institution.routes')(app);
   require('./admin.routes')(app);
+  require('./stats.routes')(app);
 };
